@@ -8,9 +8,7 @@ import (
 )
 
 func Grayscale(source [][]color.Color, grayscaleType string) [][]color.Color {
-	width := len(source)
-	height := len(source[0])
-
+	width, height := len(source), len(source[0])
 	destination := utilities.CreateGrid(width, height)
 	for x := 0; x < width; x += 1 {
 		for y := 0; y < height; y += 1 {
