@@ -4,10 +4,12 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 )
 
-func PrepareImage(file io.Reader) ([][]color.Color, string, error) {
+func PrepareSource(file io.Reader) ([][]color.Color, string, error) {
 	content, format, decodingError := image.Decode(file)
 	if decodingError != nil {
 		return nil, "", decodingError

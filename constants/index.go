@@ -1,5 +1,5 @@
 package constants
 
-const GRAY_CALCULATION_AVERAGE string = "average"
+const GRAYSCALE_AVERAGE string = "average"
 
-const GRAY_CALCULATION_LUMINOCITY string = "luminocity"
+const GRAYSCALE_LUMINOCITY string = "luminocity"

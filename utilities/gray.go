@@ -10,7 +10,7 @@ import (
 func Gray(pixel color.Color, calculationType string) (gray uint8, alpha uint8) {
 	R, G, B, A := pixel.RGBA()
 	alpha = uint8(A)
-	if calculationType == constants.GRAY_CALCULATION_LUMINOCITY {
+	if calculationType == constants.GRAYSCALE_LUMINOCITY {
 		gray = uint8(
 			math.Round(
 				(float64(uint8(R))*0.21 + float64(uint8(G))*0.72 + float64(uint8(B))*0.07),
