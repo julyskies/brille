@@ -3,7 +3,7 @@ package processing
 import (
 	"image/color"
 
-	"brille/utilities"
+	"github.com/julyskies/brille/utilities"
 )
 
 func ColorInversion(source [][]color.Color) [][]color.Color {

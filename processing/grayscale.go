@@ -3,8 +3,8 @@ package processing
 import (
 	"image/color"
 
-	"brille/constants"
-	"brille/utilities"
+	"github.com/julyskies/brille/constants"
+	"github.com/julyskies/brille/utilities"
 )
 
 func Grayscale(source [][]color.Color, grayscaleType string) [][]color.Color {

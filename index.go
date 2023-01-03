@@ -4,9 +4,9 @@ import (
 	"errors"
 	"io"
 
-	"brille/constants"
-	"brille/processing"
-	"brille/utilities"
+	"github.com/julyskies/brille/constants"
+	"github.com/julyskies/brille/processing"
+	"github.com/julyskies/brille/utilities"
 )
 
 const GRAYSCALE_AVERAGE string = constants.GRAYSCALE_AVERAGE

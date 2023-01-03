@@ -3,8 +3,8 @@ package processing
 import (
 	"image/color"
 
-	"brille/constants"
-	"brille/utilities"
+	"github.com/julyskies/brille/constants"
+	"github.com/julyskies/brille/utilities"
 )
 
 func Binary(source [][]color.Color, threshold uint) [][]color.Color {

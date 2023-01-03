@@ -4,7 +4,7 @@ import (
 	"image/color"
 	"math"
 
-	"brille/constants"
+	"github.com/julyskies/brille/constants"
 )
 
 func Gray(pixel color.Color, calculationType string) (gray uint8, alpha uint8) {
