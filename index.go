@@ -48,6 +48,38 @@ func ColorInversion(file io.Reader) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+func FlipHorizontal(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	flipped := processing.FlipHorizontal(source)
+	encoded, encodingError := utilities.PrepareResult(flipped, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+func FlipVertical(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	flipped := processing.FlipVertical(source)
+	encoded, encodingError := utilities.PrepareResult(flipped, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
