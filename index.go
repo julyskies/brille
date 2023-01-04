@@ -148,6 +148,54 @@ func LaplasianFilter(file io.Reader) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+func Rotate90(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	rotated := processing.ImageRotation(source, 90)
+	encoded, encodingError := utilities.PrepareResult(rotated, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+func Rotate180(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	rotated := processing.ImageRotation(source, 180)
+	encoded, encodingError := utilities.PrepareResult(rotated, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+func Rotate270(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	rotated := processing.ImageRotation(source, 270)
+	encoded, encodingError := utilities.PrepareResult(rotated, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func SobelFilter(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
