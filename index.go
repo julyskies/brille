@@ -32,6 +32,22 @@ func Binary(file io.Reader, threshold uint) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+func BoxBlur(file io.Reader, amount uint) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	blurred := processing.BoxBlur(source, amount)
+	encoded, encodingError := utilities.PrepareResult(blurred, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func ColorInversion(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
