@@ -115,3 +115,19 @@ func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) 
 	}
 	return encoded, format, nil
 }
+
+func LaplasianFilter(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	laplasian := processing.LaplasianFilter(source)
+	encoded, encodingError := utilities.PrepareResult(laplasian, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
