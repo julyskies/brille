@@ -148,6 +148,24 @@ func FlipVertical(file io.Reader) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+// amount: from 0 to 3.99
+func GammaCorrection(file io.Reader, amount float64) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	amount = utilities.MaxMin(amount, 3.99, 0)
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	gamma := processing.GammaCorrection(source, amount)
+	encoded, encodingError := utilities.PrepareResult(gamma, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
