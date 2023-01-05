@@ -48,6 +48,24 @@ func BoxBlur(file io.Reader, amount uint) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+// amount: from -255 to 255
+func Brightness(file io.Reader, amount int) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	amount = utilities.MaxMin(amount, 255, -255)
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	brightness := processing.Brightness(source, amount)
+	encoded, encodingError := utilities.PrepareResult(brightness, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func ColorInversion(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
@@ -58,6 +76,24 @@ func ColorInversion(file io.Reader) (io.Reader, string, error) {
 	}
 	binary := processing.ColorInversion(source)
 	encoded, encodingError := utilities.PrepareResult(binary, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+// amount: from -255 to 255
+func Contrast(file io.Reader, amount int) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	amount = utilities.MaxMin(amount, 255, -255)
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	contrast := processing.Contrast(source, amount)
+	encoded, encodingError := utilities.PrepareResult(contrast, format)
 	if encodingError != nil {
 		return nil, "", encodingError
 	}
