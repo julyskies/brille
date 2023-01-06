@@ -1,8 +1,8 @@
 ## Brille Image Processing
 
-Brille is a small image processing module for Golang
+Brille is an image processing module for Golang
 
-It works with **JPEG** and **PNG** images
+Works with **JPEG** and **PNG** images
 
 It does not have any dependencies - only standard Golang libraries are being used
 
@@ -29,8 +29,8 @@ import (
 )
 
 func main() {
-	file, _ := os.Open("/path/to/file.jpeg")
-	defer file.Close()
+  file, _ := os.Open("/path/to/file.jpeg")
+  defer file.Close()
 
   grayscaled, fileFormat, processingError := brille.Grayscale(
     file,
@@ -51,7 +51,17 @@ Using with Fiber:
 
 ### Available filters
 
-*// TODO: list of available filters*
+- **Binary**: convert an image to 1 bit black and white. Requires a threshold value (from 0 to 255):
+
+```golang
+binary, format, processingError := brille.Binary(file, 155)
+```
+
+- **Box blur**: blur the image. Requires blur amount to be provided. Blur amount is a `uint` value. Box blur function will automatically reduce the amount value if it is too big, maximum amount is `min(width, height) / 2`:
+
+```golang
+blurred, format, processingError := brille.BoxBlur(file, 5)
+```
 
 ### License
 

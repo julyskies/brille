@@ -13,13 +13,12 @@ const GRAYSCALE_AVERAGE string = constants.GRAYSCALE_AVERAGE
 
 const GRAYSCALE_LUMINOCITY string = constants.GRAYSCALE_LUMINOCITY
 
+// threshold: 0 to 255
 func Binary(file io.Reader, threshold uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	if threshold > 255 {
-		return nil, "", errors.New(constants.ERROR_INVALID_BINARY_THRESHOLD)
-	}
+	threshold = utilities.MaxMin(threshold, 255, 0)
 	source, format, preparationError := utilities.PrepareSource(file)
 	if preparationError != nil {
 		return nil, "", preparationError
@@ -32,6 +31,7 @@ func Binary(file io.Reader, threshold uint) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+// max amount: (min(width, height) / 2)
 func BoxBlur(file io.Reader, amount uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
@@ -94,6 +94,22 @@ func Contrast(file io.Reader, amount int) (io.Reader, string, error) {
 	}
 	contrast := processing.Contrast(source, amount)
 	encoded, encodingError := utilities.PrepareResult(contrast, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+func EightColors(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	eightColors := processing.EightColors(source)
+	encoded, encodingError := utilities.PrepareResult(eightColors, format)
 	if encodingError != nil {
 		return nil, "", encodingError
 	}
@@ -166,6 +182,7 @@ func GammaCorrection(file io.Reader, amount float64) (io.Reader, string, error) 
 	return encoded, format, nil
 }
 
+// type: average or luminocity
 func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
@@ -250,6 +267,22 @@ func Rotate270(file io.Reader) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+func Sepia(file io.Reader) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	sepia := processing.Sepia(source)
+	encoded, encodingError := utilities.PrepareResult(sepia, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func SobelFilter(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
@@ -260,6 +293,24 @@ func SobelFilter(file io.Reader) (io.Reader, string, error) {
 	}
 	sobel := processing.SobelFilter(source)
 	encoded, encodingError := utilities.PrepareResult(sobel, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+// threshold: 0 to 255
+func Solarize(file io.Reader, threshold uint) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	threshold = utilities.MaxMin(threshold, 255, 0)
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	solarized := processing.Solarize(source, threshold)
+	encoded, encodingError := utilities.PrepareResult(solarized, format)
 	if encodingError != nil {
 		return nil, "", encodingError
 	}
