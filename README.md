@@ -4,7 +4,7 @@ Brille is an image processing module for Golang
 
 Works with **JPEG** and **PNG** images
 
-It does not have any dependencies - only standard Golang libraries are being used
+It does not have any dependencies, only standard Golang libraries are being used
 
 ### Installation
 
@@ -16,34 +16,52 @@ go get github.com/julyskies/brille@latest
 
 ### Usage
 
+All of the Brille filter functions return 3 values:
+- processed file as `io.Reader`
+- file format as `string`
+- processing error 
+
 Basic example:
 
 ```golang
 package main
 
 import (
-  "log"
-  "os"
+	"io"
+	"log"
+	"os"
 
-  "github.com/julyskies/brille"
+	"github.com/julyskies/brille"
 )
 
 func main() {
-  file, _ := os.Open("/path/to/file.jpeg")
-  defer file.Close()
+	file, fileError := os.Open("/path/to/file.jpeg")
+	if fileError != nil {
+		log.Fatal(fileError)
+	}
+	defer file.Close()
 
-  grayscaled, fileFormat, processingError := brille.Grayscale(
-    file,
-    brille.GRAYSCALE_LUMINOCITY,
-  )
-  if processingError != nil {
-    log.Fatal(processingError)
-  }
-  // TODO: finish
+	sobel, format, processingError := brille.SobelFilter(file)
+	if processingError != nil {
+		log.Fatal(processingError)
+	}
+
+	outputFile, outputError := os.Create("sobel." + format)
+	if outputError != nil {
+		log.Fatal(outputError)
+	}
+	defer outputFile.Close()
+
+	_, copyError := io.Copy(outputFile, sobel)
+	if copyError != nil {
+		log.Fatal(copyError)
+	}
+	
+	log.Println("processed " + format)
 }
 ```
 
-Using with Fiber:
+Using with **Fiber**:
 
 ```golang
 package apis
@@ -62,8 +80,8 @@ func controller(context *fiber.Ctx) error {
 	}
 
 	partials := strings.Split(file.Filename, ".")
-	fileExtension := partials[len(partials)-1]
-	if fileExtension == "" {
+	extension := partials[len(partials)-1]
+	if extension == "" {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
@@ -141,7 +159,7 @@ func controller(context *fiber.Ctx) error {
   flippedY, format, processingError := brille.FlipVertical(file)
   ```
 
-- **Gamma correction**: image gamma correction. Requires correction amount to be provided. Correction amount ranges from 0 to 3.99 (`float64`). By default image gamma equals to `1`, so providing a value less than 1 makes colors less intense, and values more than 1 increase color intensity:
+- **Gamma correction**: image gamma correction. Requires correction amount to be provided. Correction amount ranges from `0` to `3.99` (`float64`). By default image gamma equals to `1`, so providing a value less than `1` makes colors more intense, and values more than `1` decrease color intensity:
 
   ```golang
   corrected, format, processingError := brille.GammaCorrection(file, 2.05)
