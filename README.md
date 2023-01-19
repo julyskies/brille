@@ -6,6 +6,8 @@ Works with **JPEG** and **PNG** images
 
 It does not have any dependencies, only standard Golang libraries are being used
 
+Demo: https://images.dyum.in
+
 ### Installation
 
 Minimal required Golang version: **v1.18**
@@ -102,6 +104,8 @@ func controller(context *fiber.Ctx) error {
 	return context.SendStream(result)
 }
 ```
+
+Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
 ### Available filters
 
