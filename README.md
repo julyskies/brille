@@ -183,6 +183,12 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   )
   ```
 
+- **Hue rotation**: rotate image hue to change the colors. Requires an angle to be provided. Angle represents degree of a hue rotation, can be any `int` number:
+
+  ```golang
+  rotated, format, processingError := brille.HueRotate(file, 278)
+  ```
+
 - **Laplasian filter**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
 
   ```golang
