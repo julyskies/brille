@@ -223,6 +223,10 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   solarized, format, processingError := brille.Solarize(file, 99)
   ```
 
+### Environment variables
+
+- `BRILLE_JPEG_QUALITY` (`int`) - controls output quality for JPEG images, should be a number from 0 (low quality) to 100 (highest quality)
+
 ### License
 
 [MIT](./LICENSE.md)
