@@ -220,6 +220,24 @@ func HueRotate(file io.Reader, angle int) (io.Reader, string, error) {
 	return encoded, format, nil
 }
 
+// aperture: 0 to 40
+func KuwaharaFilter(file io.Reader, aperture uint) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	aperture = utilities.MaxMin(aperture, 40, 0)
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	kuwahara := processing.KuwaharaFilter(source, aperture)
+	encoded, encodingError := utilities.PrepareResult(kuwahara, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
 func LaplasianFilter(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
@@ -294,6 +312,24 @@ func Sepia(file io.Reader) (io.Reader, string, error) {
 	}
 	sepia := processing.Sepia(source)
 	encoded, encodingError := utilities.PrepareResult(sepia, format)
+	if encodingError != nil {
+		return nil, "", encodingError
+	}
+	return encoded, format, nil
+}
+
+// amount: 0 to 100
+func SharpenFilter(file io.Reader, amount uint) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	mix := float64(utilities.MaxMin(amount, 100, 0)) / 100
+	source, format, preparationError := utilities.PrepareSource(file)
+	if preparationError != nil {
+		return nil, "", preparationError
+	}
+	sharpen := processing.Sharpen(source, mix)
+	encoded, encodingError := utilities.PrepareResult(sharpen, format)
 	if encodingError != nil {
 		return nil, "", encodingError
 	}

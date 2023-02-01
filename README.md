@@ -189,6 +189,12 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   rotated, format, processingError := brille.HueRotate(file, 278)
   ```
 
+- **Kuwahara filter**: an edge detection filter with dynamic aperture size.  Requires aperture size to be provided, but due to the perfomance reasons maximum aperture size is limited to 40. This filter is very slow, and will probably be optimized in the future:
+
+  ```golang
+  kuwahara, format, processingError := brille.KuwaharaFilter(file, 9)
+  ```
+
 - **Laplasian filter**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
 
   ```golang
@@ -211,10 +217,16 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   sepia, format, processingError := brille.Sepia(file)
   ```
 
+- **Sharpen filter**: image sharpening. Requires an ammount to be provided. Effect amount ranges from 0 to 100:
+
+  ```golang
+  sharpen, format, processingError := brille.SharpenFilter(file, 77)
+  ```
+
 - **Sobel filter**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
 
   ```golang
-  sobel, format, processingError := brille.Sobel(file)
+  sobel, format, processingError := brille.SobelFilter(file)
   ```
 
 - **Solarize**: solarization affects image colors, partially inversing the colors. Requires a threshold to be provided. Threshold ranges from 0 to 255:
@@ -222,6 +234,10 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   ```golang
   solarized, format, processingError := brille.Solarize(file, 99)
   ```
+
+### Environment variables
+
+- `BRILLE_JPEG_QUALITY` (`int`) - controls output quality for JPEG images, should be a number from 0 (low quality) to 100 (highest quality)
 
 ### License
 

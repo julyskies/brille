@@ -7,6 +7,8 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
+	"os"
+	"strconv"
 )
 
 func PrepareResult(result [][]color.Color, format string) (io.Reader, error) {
@@ -18,6 +20,15 @@ func PrepareResult(result [][]color.Color, format string) (io.Reader, error) {
 		}
 	}
 
+	jpegQualityENV := os.Getenv("BRILLE_JPEG_QUALITY")
+	jpegQuality := 100
+	if jpegQualityENV != "" {
+		parsed, parsingError := strconv.Atoi(jpegQualityENV)
+		if parsingError == nil {
+			jpegQuality = MaxMin(parsed, 100, 0)
+		}
+	}
+
 	var buffer bytes.Buffer
 	writer := io.Writer(&buffer)
 	if format == "png" {
@@ -26,7 +37,13 @@ func PrepareResult(result [][]color.Color, format string) (io.Reader, error) {
 			return nil, encodingError
 		}
 	} else {
-		encodingError := jpeg.Encode(writer, nrgba.SubImage(nrgba.Rect), nil)
+		encodingError := jpeg.Encode(
+			writer,
+			nrgba.SubImage(nrgba.Rect),
+			&jpeg.Options{
+				Quality: jpegQuality,
+			},
+		)
 		if encodingError != nil {
 			return nil, encodingError
 		}
