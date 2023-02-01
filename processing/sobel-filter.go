@@ -39,9 +39,9 @@ func SobelFilter(source [][]color.Color) [][]color.Color {
 					gradientY += int(grayColor) * sobelVertical[i][j]
 				}
 			}
-			colorCode := 255 - uint8(int(math.Sqrt(
-				float64((gradientX*gradientX)+(gradientY*gradientY)),
-			)))
+			colorCode := 255 - uint8(utilities.MaxMin(math.Sqrt(
+				float64(gradientX*gradientX+gradientY*gradientY),
+			), 255, 0))
 			destination[x][y] = color.RGBA{colorCode, colorCode, colorCode, 255}
 		}
 	}
