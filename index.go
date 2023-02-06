@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/julyskies/brille/constants"
+	"github.com/julyskies/brille/filters"
 	"github.com/julyskies/brille/processing"
 	"github.com/julyskies/brille/utilities"
 )
@@ -14,21 +15,11 @@ const GRAYSCALE_AVERAGE string = constants.GRAYSCALE_AVERAGE
 const GRAYSCALE_LUMINOCITY string = constants.GRAYSCALE_LUMINOCITY
 
 // threshold: 0 to 255
-func Binary(file io.Reader, threshold uint) (io.Reader, string, error) {
+func Binary(file io.Reader, threshold uint8) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	threshold = utilities.MaxMin(threshold, 255, 0)
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	binary := processing.Binary(source, threshold)
-	encoded, encodingError := utilities.PrepareResult(binary, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Binary(file, threshold)
 }
 
 // max amount: (min(width, height) / 2)
