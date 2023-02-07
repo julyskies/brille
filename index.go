@@ -10,9 +10,15 @@ import (
 	"github.com/julyskies/brille/utilities"
 )
 
+const FLIP_DIRECTION_HORIZONTAL string = constants.FLIP_DIRECTION_HORIZONTAL
+
+const FLIP_DIRECTION_VERTICAL string = constants.FLIP_DIRECTION_VERTICAL
+
 const GRAYSCALE_AVERAGE string = constants.GRAYSCALE_AVERAGE
 
 const GRAYSCALE_LUMINOCITY string = constants.GRAYSCALE_LUMINOCITY
+
+/* Optimized filters */
 
 // threshold: 0 to 255
 func Binary(file io.Reader, threshold uint8) (io.Reader, string, error) {
@@ -22,156 +28,68 @@ func Binary(file io.Reader, threshold uint8) (io.Reader, string, error) {
 	return filters.Binary(file, threshold)
 }
 
-// max amount: (min(width, height) / 2)
-func BoxBlur(file io.Reader, amount uint) (io.Reader, string, error) {
+// radius: any uint
+func BoxBlur(file io.Reader, radius uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	blurred := processing.BoxBlur(source, amount)
-	encoded, encodingError := utilities.PrepareResult(blurred, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.BoxBlur(file, radius)
 }
 
-// amount: from -255 to 255
+// amount: -255 to 255
 func Brightness(file io.Reader, amount int) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	amount = utilities.MaxMin(amount, 255, -255)
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	brightness := processing.Brightness(source, amount)
-	encoded, encodingError := utilities.PrepareResult(brightness, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Brightness(file, amount)
 }
 
 func ColorInversion(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	binary := processing.ColorInversion(source)
-	encoded, encodingError := utilities.PrepareResult(binary, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.ColorInversion(file)
 }
 
-// amount: from -255 to 255
+// amount: -255 to 255
 func Contrast(file io.Reader, amount int) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	amount = utilities.MaxMin(amount, 255, -255)
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	contrast := processing.Contrast(source, amount)
-	encoded, encodingError := utilities.PrepareResult(contrast, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Contrast(file, amount)
 }
 
 func EightColors(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	eightColors := processing.EightColors(source)
-	encoded, encodingError := utilities.PrepareResult(eightColors, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.EightColors(file)
 }
 
-func EmbossFilter(file io.Reader) (io.Reader, string, error) {
+func Emboss(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	emboss := processing.EmbossFilter(source)
-	encoded, encodingError := utilities.PrepareResult(emboss, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Emboss(file)
 }
 
-func FlipHorizontal(file io.Reader) (io.Reader, string, error) {
+// direction: horizontal or vertical
+func Flip(file io.Reader, direction string) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	flipped := processing.FlipHorizontal(source)
-	encoded, encodingError := utilities.PrepareResult(flipped, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Flip(file, direction)
 }
 
-func FlipVertical(file io.Reader) (io.Reader, string, error) {
-	if file == nil {
-		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
-	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	flipped := processing.FlipVertical(source)
-	encoded, encodingError := utilities.PrepareResult(flipped, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
-}
-
-// amount: from 0 to 3.99
+// amount: 0 to 3.99
 func GammaCorrection(file io.Reader, amount float64) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	amount = utilities.MaxMin(amount, 3.99, 0)
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	gamma := processing.GammaCorrection(source, amount)
-	encoded, encodingError := utilities.PrepareResult(gamma, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.GammaCorrection(file, amount)
 }
+
+/* Non-optimized filters */
 
 // type: average or luminocity
 func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) {
