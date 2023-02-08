@@ -4,7 +4,7 @@ import (
 	"io"
 	"math"
 
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 const DEG float64 = math.Pi / 180

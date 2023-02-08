@@ -4,9 +4,9 @@ import (
 	"errors"
 	"io"
 
-	"github.com/julyskies/brille/constants"
-	"github.com/julyskies/brille/filters"
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/constants"
+	"github.com/julyskies/brille/v2/filters"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 const FLIP_DIRECTION_HORIZONTAL string = constants.FLIP_DIRECTION_HORIZONTAL

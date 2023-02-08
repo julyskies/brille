@@ -4,8 +4,8 @@ import (
 	"image/color"
 	"io"
 
-	"github.com/julyskies/brille/constants"
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/constants"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 func RotateFixed(file io.Reader, angle uint) (io.Reader, string, error) {

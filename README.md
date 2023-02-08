@@ -13,7 +13,7 @@ Demo: https://images.dyum.in
 Minimal required Golang version: **v1.18**
 
 ```shell script
-go get github.com/julyskies/brille@latest
+go get github.com/julyskies/brille/v2@latest
 ```
 
 ### Versioning

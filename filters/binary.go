@@ -3,7 +3,7 @@ package filters
 import (
 	"io"
 
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 func Binary(file io.Reader, threshold uint8) (io.Reader, string, error) {

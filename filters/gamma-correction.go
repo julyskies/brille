@@ -4,7 +4,7 @@ import (
 	"io"
 	"math"
 
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 func GammaCorrection(file io.Reader, amount float64) (io.Reader, string, error) {
