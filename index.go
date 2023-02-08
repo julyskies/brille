@@ -6,7 +6,6 @@ import (
 
 	"github.com/julyskies/brille/constants"
 	"github.com/julyskies/brille/filters"
-	"github.com/julyskies/brille/processing"
 	"github.com/julyskies/brille/utilities"
 )
 
@@ -14,11 +13,15 @@ const FLIP_DIRECTION_HORIZONTAL string = constants.FLIP_DIRECTION_HORIZONTAL
 
 const FLIP_DIRECTION_VERTICAL string = constants.FLIP_DIRECTION_VERTICAL
 
-const GRAYSCALE_AVERAGE string = constants.GRAYSCALE_AVERAGE
+const GRAYSCALE_TYPE_AVERAGE string = constants.GRAYSCALE_TYPE_AVERAGE
 
-const GRAYSCALE_LUMINOCITY string = constants.GRAYSCALE_LUMINOCITY
+const GRAYSCALE_TYPE_LUMINANCE string = constants.GRAYSCALE_TYPE_LUMINANCE
 
-/* Optimized filters */
+const ROTATE_FIXED_90 uint = constants.ROTATE_FIXED_90
+
+const ROTATE_FIXED_180 uint = constants.ROTATE_FIXED_180
+
+const ROTATE_FIXED_270 uint = constants.ROTATE_FIXED_270
 
 // threshold: 0 to 255
 func Binary(file io.Reader, threshold uint8) (io.Reader, string, error) {
@@ -89,192 +92,72 @@ func GammaCorrection(file io.Reader, amount float64) (io.Reader, string, error) 
 	return filters.GammaCorrection(file, amount)
 }
 
-/* Non-optimized filters */
-
-// type: average or luminocity
+// grayscale type: average or luminance
 func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	if grayscaleType != GRAYSCALE_AVERAGE &&
-		grayscaleType != GRAYSCALE_LUMINOCITY {
-		return nil, "", errors.New(constants.ERROR_INVALID_GRAYSCALE_TYPE)
-	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	grayscale := processing.Grayscale(source, grayscaleType)
-	encoded, encodingError := utilities.PrepareResult(grayscale, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Grayscale(file, grayscaleType)
 }
 
-// angle: any int value
+// angle: any int
 func HueRotate(file io.Reader, angle int) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	rotated := processing.HueRotate(source, angle)
-	encoded, encodingError := utilities.PrepareResult(rotated, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.HueRotate(file, angle)
 }
 
-// aperture: 0 to 40
-func KuwaharaFilter(file io.Reader, aperture uint) (io.Reader, string, error) {
+// radius: 0 to 40
+func Kuwahara(file io.Reader, radius uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	aperture = utilities.MaxMin(aperture, 40, 0)
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	kuwahara := processing.KuwaharaFilter(source, aperture)
-	encoded, encodingError := utilities.PrepareResult(kuwahara, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	radius = utilities.MaxMin(radius, 40, 0)
+	return filters.Kuwahara(file, radius)
 }
 
-func LaplasianFilter(file io.Reader) (io.Reader, string, error) {
+func Laplacian(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	laplasian := processing.LaplasianFilter(source)
-	encoded, encodingError := utilities.PrepareResult(laplasian, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Laplacian(file)
 }
 
-func Rotate90(file io.Reader) (io.Reader, string, error) {
+// angle: 90, 180 or 270 (use provided constants)
+func RotateFixed(file io.Reader, angle uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	rotated := processing.ImageRotation(source, 90)
-	encoded, encodingError := utilities.PrepareResult(rotated, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
-}
-
-func Rotate180(file io.Reader) (io.Reader, string, error) {
-	if file == nil {
-		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
-	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	rotated := processing.ImageRotation(source, 180)
-	encoded, encodingError := utilities.PrepareResult(rotated, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
-}
-
-func Rotate270(file io.Reader) (io.Reader, string, error) {
-	if file == nil {
-		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
-	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	rotated := processing.ImageRotation(source, 270)
-	encoded, encodingError := utilities.PrepareResult(rotated, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.RotateFixed(file, angle)
 }
 
 func Sepia(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	sepia := processing.Sepia(source)
-	encoded, encodingError := utilities.PrepareResult(sepia, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Sepia(file)
 }
 
 // amount: 0 to 100
-func SharpenFilter(file io.Reader, amount uint) (io.Reader, string, error) {
+func Sharpen(file io.Reader, amount uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	mix := float64(utilities.MaxMin(amount, 100, 0)) / 100
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	sharpen := processing.Sharpen(source, mix)
-	encoded, encodingError := utilities.PrepareResult(sharpen, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Sharpen(file, amount)
 }
 
-func SobelFilter(file io.Reader) (io.Reader, string, error) {
+func Sobel(file io.Reader) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	sobel := processing.SobelFilter(source)
-	encoded, encodingError := utilities.PrepareResult(sobel, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Sobel(file)
 }
 
-// threshold: 0 to 255
-func Solarize(file io.Reader, threshold uint) (io.Reader, string, error) {
+// threshold: any uint8
+func Solarize(file io.Reader, threshold uint8) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	threshold = utilities.MaxMin(threshold, 255, 0)
-	source, format, preparationError := utilities.PrepareSource(file)
-	if preparationError != nil {
-		return nil, "", preparationError
-	}
-	solarized := processing.Solarize(source, threshold)
-	encoded, encodingError := utilities.PrepareResult(solarized, format)
-	if encodingError != nil {
-		return nil, "", encodingError
-	}
-	return encoded, format, nil
+	return filters.Solarize(file, threshold)
 }

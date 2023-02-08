@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func EncodeResult(img *image.RGBA, format string) (io.Reader, string, error) {
+func getJPEGQuality() int {
 	jpegQualityENV := os.Getenv("BRILLE_JPEG_QUALITY")
 	jpegQuality := 100
 	if jpegQualityENV != "" {
@@ -19,6 +19,10 @@ func EncodeResult(img *image.RGBA, format string) (io.Reader, string, error) {
 			jpegQuality = MaxMin(parsed, 100, 0)
 		}
 	}
+	return jpegQuality
+}
+
+func EncodeResult(img *image.RGBA, format string) (io.Reader, string, error) {
 	var buffer bytes.Buffer
 	writer := io.Writer(&buffer)
 	if format == "png" {
@@ -27,6 +31,7 @@ func EncodeResult(img *image.RGBA, format string) (io.Reader, string, error) {
 			return nil, "", encodingError
 		}
 	} else {
+		jpegQuality := getJPEGQuality()
 		encodingError := jpeg.Encode(
 			writer,
 			img.SubImage(img.Rect),
