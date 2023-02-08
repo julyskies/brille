@@ -16,6 +16,15 @@ Minimal required Golang version: **v1.18**
 go get github.com/julyskies/brille@latest
 ```
 
+### Versioning
+
+Brille `v2.0.X` have a number of breaking changes compared to `v1.0.X`:
+- some of the filtering functions were removed
+- some of the filtering functions were renamed
+- some of the constants were renamed
+
+Check `Available filters` section for more information regarding these changes.
+
 ### Usage
 
 All of the Brille filter functions return 3 values:
@@ -109,13 +118,13 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
 ### Available filters
 
-- **Binary**: converts an image to 1 bit black and white. Requires a threshold value (`uint8`, 0 to 255):
+- **Binary**: converts an image to 1-bit black and white. Requires a threshold value (`uint8`, 0 to 255):
 
   ```golang
   binary, format, processingError := brille.Binary(file, 155)
   ```
 
-- **Box blur**: blurs the image. Requires blur amount to be provided. Blur amount is a `uint` value:
+- **Box blur**: blurs the image. Requires blur radius to be provided (`uint`, any value):
 
   ```golang
   blurred, format, processingError := brille.BoxBlur(file, 7)
@@ -151,7 +160,7 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   embossed, format, processingError := brille.Emboss(file)
   ```
 
-- **Flip**: flips image horizontally or vertically. This filter requires a second argument - flip direction. Flip directions are available as `brille` module constants (FLIP_DIRECTION_HORIZONTAL and FLIP_DIRECTION_VERTICAL):
+- **Flip**: flips image horizontally or vertically. This filter requires a second argument - flip direction. Flip directions are available as `brille` module constants (FLIP_DIRECTION_HORIZONTAL is a horizontal mirroring and FLIP_DIRECTION_VERTICAL is vertical mirroring):
 
   ```golang
   flipped, format, processingError := brille.Flip(
@@ -181,7 +190,7 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   rotated, format, processingError := brille.HueRotate(file, 278)
   ```
 
-- **Kuwahara**: an edge detection filter with dynamic kernel size. Requires radius to be provided (`uint`, any value). This filter is pretty slow, and will probably be optimized in the future:
+- **Kuwahara**: an edge detection filter with dynamic radius. Requires radius to be provided (`uint`, any value). This filter is pretty slow, and will probably be optimized in the future:
 
   ```golang
   kuwahara, format, processingError := brille.Kuwahara(file, 5)
@@ -193,7 +202,7 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   laplacian, format, processingError := brille.Laplacian(file)
   ```
 
-- **Rotate image (fixed angle)**: rotates an image clockwise (90, 180 or 270 degrees). This filter requires a second argument - rotation angle. Rotation angles are available as `brille` module constants (ROTATE_FIXED_90, ROTATE_FIXED_180 and ROTATE_FIXED_270):
+- **Rotate image (fixed angles)**: rotates an image clockwise (90, 180 or 270 degrees). This filter requires a second argument - rotation angle. Rotation angles are available as `brille` module constants (ROTATE_FIXED_90, ROTATE_FIXED_180 and ROTATE_FIXED_270):
 
   ```golang
   rotated270deg, format, processingError := brille.RotateFixed(
