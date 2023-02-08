@@ -4,7 +4,7 @@ import (
 	"io"
 	"math"
 
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 var sobelHorizontal = [3][3]int{

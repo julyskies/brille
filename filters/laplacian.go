@@ -3,7 +3,7 @@ package filters
 import (
 	"io"
 
-	"github.com/julyskies/brille/utilities"
+	"github.com/julyskies/brille/v2/utilities"
 )
 
 var laplacianKernel = [3][3]int{
