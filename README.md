@@ -43,7 +43,7 @@ func main() {
 	}
 	defer file.Close()
 
-	sobel, format, processingError := brille.SobelFilter(file)
+	sobel, format, processingError := brille.Sobel(file)
 	if processingError != nil {
 		log.Fatal(processingError)
 	}
@@ -94,7 +94,7 @@ func controller(context *fiber.Ctx) error {
 
 	result, format, processingError := brille.Grayscale(
 		fileHandle,
-		brille.GRAYSCALE_AVERAGE,
+		brille.GRAYSCALE_TYPE_LUMINANCE,
 	)
 	if processingError != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
@@ -109,106 +109,97 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
 ### Available filters
 
-- **Binary**: convert an image to 1 bit black and white. Requires a threshold value (from 0 to 255):
+- **Binary**: converts an image to 1 bit black and white. Requires a threshold value (`uint8`, 0 to 255):
 
   ```golang
   binary, format, processingError := brille.Binary(file, 155)
   ```
 
-- **Box blur**: blur the image. Requires blur amount to be provided. Blur amount is a `uint` value. Box blur function will automatically reduce the amount value if it is too big, maximum amount is `min(width, height) / 2`:
+- **Box blur**: blurs the image. Requires blur amount to be provided. Blur amount is a `uint` value:
 
   ```golang
-  blurred, format, processingError := brille.BoxBlur(file, 5)
+  blurred, format, processingError := brille.BoxBlur(file, 7)
   ```
 
-- **Brightness**: adjust image bightness. Requires brightness amount to be provided. Brightness amount ranges from -255 (darker) to 255 (brighter):
+- **Brightness**: adjusts image bightness. Requires brightness amount to be provided (`int`, -255 to 255):
 
   ```golang
-  brightened, format, processingError := brille.Brightness(file, 107)
+  brightened, format, processingError := brille.Brightness(file, 75)
   ```
 
-- **Color inversion**: invert image colors.
+- **Color inversion**: inverts image colors:
 
   ```golang
   inverted, format, processingError := brille.ColorInversion(file)
   ```
 
-- **Contrast**: adjust image contrast. Requires contrast amount to be provided. Contrast amount ranges from -255 (less contrast) to 255 (more contrast):
+- **Contrast**: adjusts image contrast. Requires contrast amount to be provided (`int`, -255 to 255):
 
   ```golang
-  contrastless, format, processingError := brille.Contrast(file, -40)
+  contrast, format, processingError := brille.Contrast(file, -45)
   ```
 
-- **Eight colors**: this filter leaves only eight colors present on the image (red, green, blue, yellow, cyan, magenta, white, black). 
+- **Eight colors**: this filter leaves only eight colors present on the image (red, green, blue, yellow, cyan, magenta, white, black):
 
   ```golang
-  indexedColors, format, processingError := brille.EightColors(file)
+  eightColors, format, processingError := brille.EightColors(file)
   ```
 
-- **Emboss filter**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
+- **Emboss**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
 
   ```golang
-  embossed, format, processingError := brille.EmbossFilter(file)
+  embossed, format, processingError := brille.Emboss(file)
   ```
 
-- **Flip horizontal**: flip image horizontally, basically reflect the image in *X* axis.
+- **Flip**: flips image horizontally or vertically. This filter requires a second argument - flip direction. Flip directions are available as `brille` module constants (FLIP_DIRECTION_HORIZONTAL and FLIP_DIRECTION_VERTICAL):
 
   ```golang
-  flippedX, format, processingError := brille.FlipHorizontal(file)
+  flipped, format, processingError := brille.Flip(
+    file,
+    brille.FLIP_DIRECTION_HORIZONTAL,
+  )
   ```
 
-- **Flip vertical**: flip image vertically, basically reflect the image in *Y* axis.
-
-  ```golang
-  flippedY, format, processingError := brille.FlipVertical(file)
-  ```
-
-- **Gamma correction**: image gamma correction. Requires correction amount to be provided. Correction amount ranges from `0` to `3.99` (`float64`). By default image gamma equals to `1`, so providing a value less than `1` makes colors more intense, and values more than `1` decrease color intensity:
+- **Gamma correction**: corrects image gamma. Requires correction amount to be provided (`float64`, 0 to 3.99). By default image gamma equals to 1, so providing a value less than that makes colors more intense, and larger values decrease color intensity:
 
   ```golang
   corrected, format, processingError := brille.GammaCorrection(file, 2.05)
   ```
 
-- **Grayscale**: turn colors into shades of gray. Requires grayscale type to be provided. There are 2 grayscale types available: `average` (or `mean`) and `luminocity` (or `weighted`). Both types are available as constants in `brille` module:
+- **Grayscale**: turns colors into shades of gray. This filter requires a second argument - grayscale type. Grayscale types are available as `brille` module constants (GRAYSCALE_TYPE_AVERAGE and GRAYSCALE_TYPE_LUMINANCE):
 
   ```golang
-  grayAverage, format, processingError := brille.Grayscale(
+  grayscale, format, processingError := brille.Grayscale(
     file,
-    brille.GRAYSCALE_AVERAGE,
-  )
-
-  grayLuminocity, format, processingError := brille.Grayscale(
-    file,
-    brille.GRAYSCALE_LUMINOCITY,
+    brille.GRAYSCALE_TYPE_LUMINANCE,
   )
   ```
 
-- **Hue rotation**: rotate image hue to change the colors. Requires an angle to be provided. Angle represents degree of a hue rotation, can be any `int` number:
+- **Hue rotation**: rotates image hue. Requires an angle to be provided (`int`, any value):
 
   ```golang
   rotated, format, processingError := brille.HueRotate(file, 278)
   ```
 
-- **Kuwahara filter**: an edge detection filter with dynamic aperture size.  Requires aperture size to be provided, but due to the perfomance reasons maximum aperture size is limited to 40. This filter is very slow, and will probably be optimized in the future:
+- **Kuwahara**: an edge detection filter with dynamic kernel size. Requires radius to be provided (`uint`, any value). This filter is pretty slow, and will probably be optimized in the future:
 
   ```golang
-  kuwahara, format, processingError := brille.KuwaharaFilter(file, 9)
+  kuwahara, format, processingError := brille.Kuwahara(file, 5)
   ```
 
-- **Laplasian filter**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
+- **Laplacian**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
 
   ```golang
-  laplasian, format, processingError := brille.LaplasianFilter(file)
+  laplacian, format, processingError := brille.Laplacian(file)
   ```
 
-- **Rotate image (fixed angle)**: rotate an image. Available fixed angeles are 90, 180 and 270 degrees (clockwise):
+- **Rotate image (fixed angle)**: rotates an image clockwise (90, 180 or 270 degrees). This filter requires a second argument - rotation angle. Rotation angles are available as `brille` module constants (ROTATE_FIXED_90, ROTATE_FIXED_180 and ROTATE_FIXED_270):
 
   ```golang
-  rotated90, format, processingError := brille.Rotate90(file)
-
-  rotated180, format, processingError := brille.Rotate180(file)
-  
-  rotated270, format, processingError := brille.Rotate270(file)
+  rotated270deg, format, processingError := brille.RotateFixed(
+    file,
+    brille.ROTATE_FIXED_270,
+  )
   ```
 
 - **Sepia**: sepia color filter.
@@ -217,19 +208,19 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   sepia, format, processingError := brille.Sepia(file)
   ```
 
-- **Sharpen filter**: image sharpening. Requires an ammount to be provided. Effect amount ranges from 0 to 100:
+- **Sharpen**: sharpens provided image. Requires an amount to be provided (`uint`, 0 to 100):
 
   ```golang
-  sharpen, format, processingError := brille.SharpenFilter(file, 77)
+  sharpen, format, processingError := brille.Sharpen(file, 50)
   ```
 
-- **Sobel filter**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
+- **Sobel**: a static edge detection filter that uses a 3x3 kernel. It can be used to outline edges on an image:
 
   ```golang
-  sobel, format, processingError := brille.SobelFilter(file)
+  sobel, format, processingError := brille.Sobel(file)
   ```
 
-- **Solarize**: solarization affects image colors, partially inversing the colors. Requires a threshold to be provided. Threshold ranges from 0 to 255:
+- **Solarize**: solarization affects image colors, partially inversing the colors. Requires a threshold to be provided (`uint8`, 0 to 255):
 
   ```golang
   solarized, format, processingError := brille.Solarize(file, 99)
@@ -237,7 +228,7 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
 ### Environment variables
 
-- `BRILLE_JPEG_QUALITY` (`int`) - controls output quality for JPEG images, should be a number from 0 (low quality) to 100 (highest quality)
+- `BRILLE_JPEG_QUALITY` (`int`) - controls output quality for JPEG images, should be a number from 0 (low quality) to 100 (highest quality). Highest quality is used by default.
 
 ### License
 
