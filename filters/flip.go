@@ -27,15 +27,20 @@ func Flip(file io.Reader, direction string) (io.Reader, string, error) {
 	for i := 0; i < len(img.Pix); i += 4 {
 		x, y := utilities.GetCoordinates(i/4, width)
 		var j int
+		skip := true
 		if direction == constants.FLIP_DIRECTION_HORIZONTAL && x < width/2+widthCorrection {
 			j = utilities.GetPixel(width-x-1, y, width)
+			skip = false
 		}
 		if direction == constants.FLIP_DIRECTION_VERTICAL && y < height/2+heightCorrection {
 			j = utilities.GetPixel(x, height-y-1, width)
+			skip = false
 		}
-		r, g, b := img.Pix[i], img.Pix[i+1], img.Pix[i+2]
-		img.Pix[i], img.Pix[i+1], img.Pix[i+2] = img.Pix[j], img.Pix[j+1], img.Pix[j+2]
-		img.Pix[j], img.Pix[j+1], img.Pix[j+2] = r, g, b
+		if !skip {
+			r, g, b := img.Pix[i], img.Pix[i+1], img.Pix[i+2]
+			img.Pix[i], img.Pix[i+1], img.Pix[i+2] = img.Pix[j], img.Pix[j+1], img.Pix[j+2]
+			img.Pix[j], img.Pix[j+1], img.Pix[j+2] = r, g, b
+		}
 	}
 	return utilities.EncodeResult(img, format)
 }

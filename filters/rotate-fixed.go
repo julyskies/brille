@@ -30,9 +30,9 @@ func RotateFixed(file io.Reader, angle uint) (io.Reader, string, error) {
 			var j int
 			if y < height/2+heightCorrection {
 				j = utilities.GetPixel(width-x-1, height-y-1, width)
+				img.Pix[i], img.Pix[i+1], img.Pix[i+2] = img.Pix[j], img.Pix[j+1], img.Pix[j+2]
+				img.Pix[j], img.Pix[j+1], img.Pix[j+2] = r, g, b
 			}
-			img.Pix[i], img.Pix[i+1], img.Pix[i+2] = img.Pix[j], img.Pix[j+1], img.Pix[j+2]
-			img.Pix[j], img.Pix[j+1], img.Pix[j+2] = r, g, b
 		}
 		return utilities.EncodeResult(img, format)
 	}
