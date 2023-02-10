@@ -19,44 +19,31 @@ func RotateFixed(file io.Reader, angle uint) (io.Reader, string, error) {
 		angle = constants.ROTATE_FIXED_90
 	}
 	width, height := img.Rect.Max.X, img.Rect.Max.Y
-	heightCorrection := 0
-	if height%2 != 0 {
-		heightCorrection = 1
-	}
+	gridWidth, gridHeight := width, height
 	if angle == constants.ROTATE_FIXED_180 {
-		for i := 0; i < len(img.Pix); i += 4 {
-			x, y := utilities.GetCoordinates(i/4, width)
-			r, g, b := img.Pix[i], img.Pix[i+1], img.Pix[i+2]
-			var j int
-			if y < height/2+heightCorrection {
-				j = utilities.GetPixel(width-x-1, height-y-1, width)
-			}
-			img.Pix[i], img.Pix[i+1], img.Pix[i+2] = img.Pix[j], img.Pix[j+1], img.Pix[j+2]
-			img.Pix[j], img.Pix[j+1], img.Pix[j+2] = r, g, b
-		}
-		return utilities.EncodeResult(img, format)
+		gridWidth, gridHeight = height, width
 	}
-	destination := make([][]color.Color, width)
+	destination := make([][]color.Color, gridWidth)
 	for i := range destination {
-		destination[i] = make([]color.Color, height)
+		destination[i] = make([]color.Color, gridHeight)
 	}
 	for i := 0; i < len(img.Pix); i += 4 {
 		x, y := utilities.GetCoordinates(i/4, width)
+		dx, dy := y, x
 		if angle == constants.ROTATE_FIXED_90 {
-			destination[height-y-1][x] = color.RGBA{
-				img.Pix[i],
-				img.Pix[i+1],
-				img.Pix[i+2],
-				img.Pix[i+3],
-			}
+			dx = height - y - 1
+		}
+		if angle == constants.ROTATE_FIXED_180 {
+			dx, dy = width-x-1, height-y-1
 		}
 		if angle == constants.ROTATE_FIXED_270 {
-			destination[y][width-x-1] = color.RGBA{
-				img.Pix[i],
-				img.Pix[i+1],
-				img.Pix[i+2],
-				img.Pix[i+3],
-			}
+			dy = width - x - 1
+		}
+		destination[dx][dy] = color.RGBA{
+			img.Pix[i],
+			img.Pix[i+1],
+			img.Pix[i+2],
+			img.Pix[i+3],
 		}
 	}
 	return utilities.EncodeGridResult(destination, format)

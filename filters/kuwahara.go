@@ -74,6 +74,7 @@ func Kuwahara(file io.Reader, radius uint) (io.Reader, string, error) {
 		destination[i] = uint8(rValues[j] / pixelsCount[j])
 		destination[i+1] = uint8(gValues[j] / pixelsCount[j])
 		destination[i+2] = uint8(bValues[j] / pixelsCount[j])
+		destination[i+3] = img.Pix[i+3]
 	}
 	img.Pix = destination
 	return utilities.EncodeResult(img, format)
