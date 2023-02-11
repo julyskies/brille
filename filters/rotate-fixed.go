@@ -20,7 +20,7 @@ func RotateFixed(file io.Reader, angle uint) (io.Reader, string, error) {
 	}
 	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	gridWidth, gridHeight := width, height
-	if angle == constants.ROTATE_FIXED_180 {
+	if angle != constants.ROTATE_FIXED_180 {
 		gridWidth, gridHeight = height, width
 	}
 	destination := make([][]color.Color, gridWidth)
