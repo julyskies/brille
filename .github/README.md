@@ -239,6 +239,10 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
 - `BRILLE_JPEG_QUALITY` (`int`) - controls output quality for JPEG images, should be a number from 0 (low quality) to 100 (highest quality). Highest quality is used by default.
 
+### Contributing
+
+Please check [contributing rules](CONTRIBUTING.md).
+
 ### License
 
 [MIT](./LICENSE.md)
