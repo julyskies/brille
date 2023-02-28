@@ -18,7 +18,7 @@ func getJPEGQuality() int {
 	if jpegQualityENV != "" {
 		parsed, parsingError := strconv.Atoi(jpegQualityENV)
 		if parsingError == nil {
-			jpegQuality = MaxMin(parsed, 100, 0)
+			jpegQuality = Clamp(parsed, 100, 0)
 		}
 	}
 	return jpegQuality

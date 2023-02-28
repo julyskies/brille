@@ -121,7 +121,7 @@ func Kuwahara(file io.Reader, radius uint) (io.Reader, string, error) {
 	if file == nil {
 		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
 	}
-	radius = utilities.MaxMin(radius, 40, 0)
+	radius = utilities.Clamp(radius, 40, 0)
 	return filters.Kuwahara(file, radius)
 }
 

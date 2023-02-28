@@ -245,6 +245,8 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
 - `BRILLE_JPEG_QUALITY` (`int`) - controls output quality for JPEG images, should be a number from 0 (low quality) to 100 (highest quality). Highest quality is used by default.
 
+- `BRILLE_THREADS` (`int`) - controls the number of threads used when performing image processing. By default `runtime.NumCPU()` value is used, and provided number should be less or equal to that value.
+
 ### Contributing
 
 Please check [contributing rules](CONTRIBUTING.md).
