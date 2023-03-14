@@ -18,7 +18,7 @@ func Sharpen(file io.Reader, amount uint) (io.Reader, string, error) {
 	if convertationError != nil {
 		return nil, "", convertationError
 	}
-	mix := float64(utilities.MaxMin(amount, 100, 0)) / 100
+	mix := float64(utilities.Clamp(amount, 100, 0)) / 100
 	pixLen := len(img.Pix)
 	threads := utilities.GetThreads()
 	pixPerThread := utilities.GetPixPerThread(pixLen, threads)
@@ -43,13 +43,13 @@ func Sharpen(file io.Reader, amount uint) (io.Reader, string, error) {
 				}
 			}
 			result[i] = uint8(
-				utilities.MaxMin(float64(dR)*mix+float64(img.Pix[i])*(1-mix), 255, 0),
+				utilities.Clamp(float64(dR)*mix+float64(img.Pix[i])*(1-mix), 255, 0),
 			)
 			result[i+1] = uint8(
-				utilities.MaxMin(float64(dG)*mix+float64(img.Pix[i+1])*(1-mix), 255, 0),
+				utilities.Clamp(float64(dG)*mix+float64(img.Pix[i+1])*(1-mix), 255, 0),
 			)
 			result[i+2] = uint8(
-				utilities.MaxMin(float64(dB)*mix+float64(img.Pix[i+2])*(1-mix), 255, 0),
+				utilities.Clamp(float64(dB)*mix+float64(img.Pix[i+2])*(1-mix), 255, 0),
 			)
 			result[i+3] = img.Pix[i+3]
 		}

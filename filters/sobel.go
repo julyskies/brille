@@ -41,8 +41,8 @@ func Sobel(file io.Reader) (io.Reader, string, error) {
 			for m := 0; m < 3; m += 1 {
 				for n := 0; n < 3; n += 1 {
 					px := utilities.GetPixel(
-						utilities.MaxMin(x-(len(laplacianKernel)/2-m), width-1, 0),
-						utilities.MaxMin(y-(len(laplacianKernel)/2-n), height-1, 0),
+						utilities.Clamp(x-(len(laplacianKernel)/2-m), width-1, 0),
+						utilities.Clamp(y-(len(laplacianKernel)/2-n), height-1, 0),
 						width,
 					)
 					average := (int(img.Pix[px]) + int(img.Pix[px+1]) + int(img.Pix[px+2])) / 3
@@ -51,7 +51,7 @@ func Sobel(file io.Reader) (io.Reader, string, error) {
 				}
 			}
 			channel := uint8(
-				255 - utilities.MaxMin(
+				255 - utilities.Clamp(
 					math.Sqrt(float64(gradientX*gradientX+gradientY*gradientY)),
 					255,
 					0,
