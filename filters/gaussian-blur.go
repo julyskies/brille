@@ -38,6 +38,7 @@ func GaussianBlur(file io.Reader, sigma float64) (io.Reader, string, error) {
 	if convertationError != nil {
 		return nil, "", convertationError
 	}
+	sigma = utilities.Clamp(sigma, 99, 0)
 	kernel := createKernel(sigma)
 	pixLen := len(img.Pix)
 	width, height := img.Rect.Max.X, img.Rect.Max.Y
