@@ -8,11 +8,13 @@ import (
 	"io"
 	"os"
 	"strconv"
+
+	"github.com/julyskies/brille/v2/constants"
 )
 
 func getJPEGQuality() int {
-	jpegQualityENV := os.Getenv("BRILLE_JPEG_QUALITY")
-	jpegQuality := 100
+	jpegQualityENV := os.Getenv(constants.ENV_JPEG_QUALITY)
+	jpegQuality := constants.ENV_JPEG_QUALITY_DEFAULT
 	if jpegQualityENV != "" {
 		parsed, parsingError := strconv.Atoi(jpegQualityENV)
 		if parsingError == nil {
