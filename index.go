@@ -92,6 +92,14 @@ func GammaCorrection(file io.Reader, amount float64) (io.Reader, string, error) 
 	return filters.GammaCorrection(file, amount)
 }
 
+// sigma: 0 to 99
+func GaussianBlur(file io.Reader, sigma float64) (io.Reader, string, error) {
+	if file == nil {
+		return nil, "", errors.New(constants.ERROR_NO_FILE_PROVIDED)
+	}
+	return filters.GaussianBlur(file, sigma)
+}
+
 // grayscale type: average or luminance
 func Grayscale(file io.Reader, grayscaleType string) (io.Reader, string, error) {
 	if file == nil {

@@ -1,5 +1,11 @@
 package constants
 
+const ENV_JPEG_QUALITY string = "BRILLE_JPEG_QUALITY"
+
+const ENV_JPEG_QUALITY_DEFAULT int = 100
+
+const ENV_THREADS string = "BRILLE_THREADS"
+
 const ERROR_NO_FILE_PROVIDED string = "no file provided"
 
 const FLIP_DIRECTION_HORIZONTAL string = "horizontal"

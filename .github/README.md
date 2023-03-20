@@ -175,6 +175,12 @@ Full Fiber example is available at https://github.com/peterdee/filtering-backend
   corrected, format, processingError := brille.GammaCorrection(file, 2.05)
   ```
 
+- **Gaussian blur**: blurs an image using dynamically generated Gaussian kernel. Requires sigma value to be provided (`float64`, 0 to 99). Sigma value represents blur intensity and directly correlates with generated kernel size. This Gaussian blur implementation performs 2 convolution cycles (horizontal & vertical) for the best blur quality:
+
+  ```golang
+  blurred, format, processingError := brille.GaussianBlur(file, 7.5)
+  ```
+
 - **Grayscale**: turns colors into shades of gray. This filter requires a second argument - grayscale type. Grayscale types are available as `brille` module constants (GRAYSCALE_TYPE_AVERAGE and GRAYSCALE_TYPE_LUMINANCE):
 
   ```golang
