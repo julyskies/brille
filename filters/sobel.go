@@ -28,8 +28,8 @@ func Sobel(file io.Reader) (io.Reader, string, error) {
 	pixLen := len(img.Pix)
 	threads := utilities.GetThreads()
 	pixPerThread := utilities.GetPixPerThread(pixLen, threads)
-	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	result := make([]uint8, pixLen)
+	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	var wg sync.WaitGroup
 	processing := func(thread int) {
 		defer wg.Done()

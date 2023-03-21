@@ -116,6 +116,10 @@ func controller(context *fiber.Ctx) error {
 
 Full Fiber example is available at https://github.com/peterdee/filtering-backend
 
+### Performance
+
+Brille uses `sync.WaitGroup` for performance optimization starting with version **v2.0.4**. Image processing can be done in several threads (by default Brille uses `runtime.NumCPU()` value). 
+
 ### Available filters
 
 - **Binary**: converts an image to 1-bit black and white. Requires a threshold value (`uint8`, 0 to 255):
