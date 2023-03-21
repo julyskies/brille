@@ -14,7 +14,7 @@ func GetThreads() int {
 	if threadsNumberENV != "" {
 		parsed, parsingError := strconv.Atoi(threadsNumberENV)
 		if parsingError == nil {
-			threadsNumber = MaxMin(parsed, threadsNumber, 1)
+			threadsNumber = Clamp(parsed, threadsNumber, 1)
 		}
 	}
 	return threadsNumber
