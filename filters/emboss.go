@@ -25,11 +25,11 @@ func Emboss(file io.Reader) (io.Reader, string, error) {
 	if convertationError != nil {
 		return nil, "", convertationError
 	}
-	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	pixLen := len(img.Pix)
-	result := make([]uint8, pixLen)
 	threads := utilities.GetThreads()
 	pixPerThread := utilities.GetPixPerThread(pixLen, threads)
+	result := make([]uint8, pixLen)
+	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	var wg sync.WaitGroup
 	processing := func(thread int) {
 		defer wg.Done()

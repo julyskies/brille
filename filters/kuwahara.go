@@ -12,12 +12,12 @@ func Kuwahara(file io.Reader, radius uint) (io.Reader, string, error) {
 	if convertationError != nil {
 		return nil, "", convertationError
 	}
-	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	radiusInt := int(radius)
 	pixLen := len(img.Pix)
 	threads := utilities.GetThreads()
 	pixPerThread := utilities.GetPixPerThread(pixLen, threads)
 	result := make([]uint8, pixLen)
+	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	var wg sync.WaitGroup
 	processing := func(thread int) {
 		defer wg.Done()

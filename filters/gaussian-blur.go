@@ -41,12 +41,11 @@ func GaussianBlur(file io.Reader, sigma float64) (io.Reader, string, error) {
 	sigma = utilities.Clamp(sigma, 99, 0)
 	kernel := createKernel(sigma)
 	pixLen := len(img.Pix)
-	width, height := img.Rect.Max.X, img.Rect.Max.Y
-	temp := make([]uint8, pixLen)
 	threads := utilities.GetThreads()
 	pixPerThread := utilities.GetPixPerThread(pixLen, threads)
+	temp := make([]uint8, pixLen)
+	width, height := img.Rect.Max.X, img.Rect.Max.Y
 	var wg sync.WaitGroup
-
 	processing := func(start int, direction string) {
 		defer wg.Done()
 		end := utilities.ClampMax(start+pixPerThread, pixLen)
@@ -88,20 +87,15 @@ func GaussianBlur(file io.Reader, sigma float64) (io.Reader, string, error) {
 			}
 		}
 	}
-
-	// horizontal
 	for t := 0; t < threads; t += 1 {
 		wg.Add(1)
 		go processing(pixPerThread*t, "horizontal")
 	}
 	wg.Wait()
-
-	// vertical
 	for t := 0; t < threads; t += 1 {
 		wg.Add(1)
 		go processing(pixPerThread*t, "vertical")
 	}
 	wg.Wait()
-
 	return utilities.EncodeResult(img, format)
 }
